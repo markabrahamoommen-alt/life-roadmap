@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Roadmap — Career & Academic Planner</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg-secondary: #f5f4f0; --bg-tertiary: #eeece7;
+    --text: #1a1a18; --text-secondary: #6b6a65; --text-tertiary: #9b9a96;
+    --border: rgba(0,0,0,0.12); --border-md: rgba(0,0,0,0.22);
+    --radius-md: 8px; --radius-lg: 12px;
+    --blue-bg: #E6F1FB; --blue-text: #0C447C; --blue-border: #185FA5;
+    --green-bg: #EAF3DE; --green-text: #27500A; --green-border: #3B6D11;
+    --amber-bg: #FAEEDA; --amber-text: #633806; --amber-border: #854F0B;
+    --coral-bg: #FAECE7; --coral-text: #712B13;
+    --purple-bg: #EEEDFE; --purple-text: #3C3489;
+    --teal-bg: #E1F5EE; --teal-text: #085041; --teal-border: #0F6E56;
+    --gray-bg: #F1EFE8; --gray-text: #444441;
+    --success-bg: #EAF3DE; --success-text: #27500A;
+    --warning-bg: #FAEEDA; --warning-text: #633806; --warning-border: #854F0B;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg-secondary: #242421; --bg-tertiary: #2c2c2a;
+      --text: #f0ede8; --text-secondary: #9b9a96; --text-tertiary: #6b6a65;
+      --border: rgba(255,255,255,0.1); --border-md: rgba(255,255,255,0.2);
+      --blue-bg: #0c2d52; --blue-text: #85B7EB; --blue-border: #378ADD;
+      --green-bg: #173404; --green-text: #C0DD97; --green-border: #639922;
+      --amber-bg: #412402; --amber-text: #FAC775; --amber-border: #EF9F27;
+      --coral-bg: #4A1B0C; --coral-text: #F0997B;
+      --purple-bg: #26215C; --purple-text: #AFA9EC;
+      --teal-bg: #04342C; --teal-text: #5DCAA5; --teal-border: #1D9E75;
+      --gray-bg: #2C2C2A; --gray-text: #B4B2A9;
+      --success-bg: #173404; --success-text: #C0DD97;
+      --warning-bg: #412402; --warning-text: #FAC775; --warning-border: #EF9F27;
+      --info-bg: #0c2d52; --info-text: #85B7EB;
+    }
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-tertiary); color: var(--text); min-height: 100vh; }
+
+  /* Auth gate — shown while verifying */
+  #auth-gate { position: fixed; inset: 0; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; z-index: 999; }
+  .gate-spinner { width: 28px; height: 28px; border: 2.5px solid var(--border-md); border-top-color: var(--blue-border); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .page { max-width: 780px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+  /* Top bar */
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+  .topbar-left h1 { font-size: 24px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .topbar-left p { font-size: 13px; color: var(--text-secondary); }
+  .logout-btn { font-size: 12px; font-weight: 500; padding: 6px 12px; background: transparent; border: 0.5px solid var(--border-md); border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all .15s; }
+  .logout-btn:hover { color: var(--text); background: var(--bg-secondary); }
+
+  .header-meta { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .pill { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; }
+  .pill-blue { background: var(--blue-bg); color: var(--blue-text); }
+  .pill-green { background: var(--green-bg); color: var(--green-text); }
+  .pill-amber { background: var(--amber-bg); color: var(--amber-text); }
+  .pill-gray { background: var(--gray-bg); color: var(--gray-text); }
+
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 2rem; }
+  .metric { background: var(--bg); border-radius: var(--radius-lg); padding: 1rem 1.1rem; border: 0.5px solid var(--border); }
+  .metric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+  .metric-value { font-size: 22px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .metric-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+  .tab-bar { display: flex; gap: 4px; padding: 4px; background: var(--bg-secondary); border-radius: var(--radius-lg); margin-bottom: 1.5rem; flex-wrap: wrap; border: 0.5px solid var(--border); }
+  .tab-btn { flex: 1; min-width: 90px; padding: 9px 10px; font-size: 13px; background: transparent; border: none; border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all .15s; white-space: nowrap; }
+  .tab-btn i { font-size: 15px; }
+  .tab-btn.active { background: var(--bg); color: var(--text); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .tab-btn:hover:not(.active) { color: var(--text); background: var(--bg-secondary); }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn .18s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .sec-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .875rem; }
+
+  .phase-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; margin-bottom: .75rem; }
+  .phase-card.current { border-color: var(--blue-border); border-width: 1.5px; }
+  .phase-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .phase-badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+  .ph1{background:var(--blue-bg);color:var(--blue-text)} .ph2{background:var(--green-bg);color:var(--green-text)}
+  .ph3{background:var(--amber-bg);color:var(--amber-text)} .ph4{background:var(--coral-bg);color:var(--coral-text)}
+  .ph5{background:var(--purple-bg);color:var(--purple-text)} .ph6{background:var(--teal-bg);color:var(--teal-text)}
+  .ph7{background:var(--gray-bg);color:var(--gray-text)}
+  .badge-current { font-size: 10px; font-weight: 600; background: var(--success-bg); color: var(--success-text); padding: 2px 8px; border-radius: 20px; }
+  .phase-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .phase-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+  .phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .phase-col-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+  .phase-col-val { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: .75rem 1.25rem; }
+  .year-row { display: grid; grid-template-columns: 52px 44px 68px 1fr; border-bottom: 0.5px solid var(--border); padding: 11px 0; align-items: start; }
+  .year-row:last-child { border-bottom: none; }
+  .year-num { font-size: 14px; font-weight: 600; color: var(--text); }
+  .year-age { font-size: 12px; color: var(--text-secondary); padding-top: 2px; }
+  .year-status { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; display: inline-block; }
+  .st-current { background: var(--info-bg); color: var(--info-text); }
+  .st-upcoming { background: var(--bg-secondary); color: var(--text-secondary); }
+  .year-body { padding-left: 10px; }
+  .year-phase-tag { font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 3px; }
+  .year-actions { font-size: 13px; color: var(--text); line-height: 1.55; }
+  .year-hdr { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); display: grid; grid-template-columns: 52px 44px 68px 1fr; }
+
+  .cred-row { display: grid; grid-template-columns: 1fr 62px 62px 95px; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: center; }
+  .cred-row:last-child { border-bottom: none; }
+  .cred-hdr { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); display: grid; grid-template-columns: 1fr 62px 62px 95px; gap: 10px; }
+  .cred-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .cred-type { font-size: 11px; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
+  .cred-yr { font-size: 13px; color: var(--text-secondary); }
+  .cred-status { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; text-align: center; }
+  .cs-done { background: var(--green-bg); color: var(--green-text); }
+  .cs-target { background: var(--blue-bg); color: var(--blue-text); }
+  .cs-optional { background: var(--gray-bg); color: var(--gray-text); }
+  .progress-section { margin-top: 1.5rem; }
+  .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: .625rem; }
+  .progress-label { font-size: 13px; color: var(--text); flex: 1; }
+  .progress-year { font-size: 11px; color: var(--text-secondary); width: 32px; text-align: right; }
+  .progress-bar { width: 180px; height: 6px; background: var(--bg-secondary); border-radius: 3px; flex-shrink: 0; }
+  .progress-fill { height: 6px; border-radius: 3px; background: var(--blue-border); }
+  .progress-fill.done { background: var(--green-border); }
+
+  .upsc-row { display: grid; grid-template-columns: 82px 44px 40px 1fr 80px; gap: 8px; padding: 11px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; align-items: start; }
+  .upsc-row:last-child { border-bottom: none; }
+  .upsc-hdr { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; display: grid; grid-template-columns: 82px 44px 40px 1fr 80px; gap: 8px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+  .upsc-attempt { font-weight: 600; color: var(--text); }
+  .upsc-focus { color: var(--text); line-height: 1.5; }
+  .upsc-stage { font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 20px; text-align: center; background: var(--bg-secondary); color: var(--text-secondary); }
+  .upsc-final { background: var(--amber-bg); color: var(--amber-text); }
+  .upsc-note { margin-top: 1rem; padding: .875rem 1rem; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 13px; color: var(--text-secondary); line-height: 1.6; border: 0.5px solid var(--border); }
+
+  .fin-row { display: grid; grid-template-columns: 56px 1fr 88px 80px 100px; gap: 8px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: center; }
+  .fin-row:last-child { border-bottom: none; }
+  .fin-hdr { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; display: grid; grid-template-columns: 56px 1fr 88px 80px 100px; gap: 8px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+  .fin-year { font-size: 13px; font-weight: 600; color: var(--text); }
+  .fin-income { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+  .fin-num { font-size: 13px; color: var(--text); }
+  .fin-save { font-size: 13px; font-weight: 600; color: var(--green-text); }
+  .fin-corpus-num { font-size: 12px; color: var(--text); }
+  .corpus-bar { height: 4px; background: var(--bg-secondary); border-radius: 2px; margin-top: 4px; }
+  .corpus-fill { height: 4px; border-radius: 2px; background: var(--blue-border); }
+  .exit-row { background: var(--amber-bg); margin: 0 -1.25rem; padding: 10px 1.25rem; }
+  .fin-note { margin-top: 1rem; padding: .875rem 1.1rem; border-left: 3px solid var(--green-border); background: var(--green-bg); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 13px; color: var(--green-text); line-height: 1.6; }
+
+  .alert-card { border-left: 3px solid var(--warning-border); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: .875rem 1.1rem; margin-bottom: .75rem; background: var(--warning-bg); }
+  .alert-title { font-size: 13px; font-weight: 600; color: var(--warning-text); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+  .alert-title i { font-size: 15px; }
+  .alert-body { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .mba-row { display: grid; grid-template-columns: 1fr 62px 80px 70px; gap: 8px; padding: 9px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; align-items: center; }
+  .mba-row:last-child { border-bottom: none; }
+  .mba-hdr { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; display: grid; grid-template-columns: 1fr 62px 80px 70px; gap: 8px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+
+  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); text-align: center; font-size: 12px; color: var(--text-tertiary); }
+
+  @media (max-width: 600px) {
+    .phase-grid { grid-template-columns: 1fr; }
+    .cred-row, .cred-hdr { grid-template-columns: 1fr 55px 85px; }
+    .cred-row > *:nth-child(2), .cred-hdr > *:nth-child(2) { display: none; }
+    .upsc-row, .upsc-hdr { grid-template-columns: 75px 40px 1fr 72px; }
+    .upsc-row > *:nth-child(3), .upsc-hdr > *:nth-child(3) { display: none; }
+    .fin-row, .fin-hdr { grid-template-columns: 48px 1fr 72px 88px; }
+    .fin-row > *:nth-child(3), .fin-hdr > *:nth-child(3) { display: none; }
+    .mba-row, .mba-hdr { grid-template-columns: 1fr 72px 68px; }
+    .mba-row > *:nth-child(2), .mba-hdr > *:nth-child(2) { display: none; }
+    .metric-row { grid-template-columns: 1fr 1fr; }
+    .tab-btn { min-width: 70px; font-size: 12px; }
+    .year-row, .year-hdr { grid-template-columns: 48px 38px 62px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Auth gate shown while token is verified -->
+<div id="auth-gate"><div class="gate-spinner"></div></div>
+
+<div class="page" id="main-content" style="display:none">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Life Roadmap</h1>
+      <p>Career & Academic Planner</p>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+      <i class="ti ti-logout" aria-hidden="true"></i> Sign out
+    </button>
+  </div>
+
+  <div class="header-meta">
+    <span class="pill pill-green">Current: Phase 1 · IT + MTech</span>
+    <span class="pill pill-blue">Age 23 · Bangalore</span>
+    <span class="pill pill-amber">UPSC window: 2029–2034</span>
+    <span class="pill pill-gray">IT exit: Feb 2032</span>
+  </div>
+
+  <div class="metric-row">
+    <div class="metric"><div class="metric-label">Current age</div><div class="metric-value">23</div><div class="metric-sub">turns 24, Nov 2026</div></div>
+    <div class="metric"><div class="metric-label">UPSC attempts</div><div class="metric-value">6</div><div class="metric-sub">2029 – 2034 window</div></div>
+    <div class="metric"><div class="metric-label">IT exit</div><div class="metric-value">Feb '32</div><div class="metric-sub">6 years service</div></div>
+    <div class="metric"><div class="metric-label">Corpus target</div><div class="metric-value">₹18–22L</div><div class="metric-sub">before IT exit</div></div>
+  </div>
+
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" onclick="switchTab('phases')"><i class="ti ti-map-2" aria-hidden="true"></i> Phases</button>
+    <button class="tab-btn" onclick="switchTab('years')"><i class="ti ti-calendar" aria-hidden="true"></i> Year by year</button>
+    <button class="tab-btn" onclick="switchTab('credentials')"><i class="ti ti-certificate" aria-hidden="true"></i> Credentials</button>
+    <button class="tab-btn" onclick="switchTab('upsc')"><i class="ti ti-building-bank" aria-hidden="true"></i> UPSC</button>
+    <button class="tab-btn" onclick="switchTab('finance')"><i class="ti ti-coin" aria-hidden="true"></i> Finances</button>
+    <button class="tab-btn" onclick="switchTab('watchpoints')"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Watchpoints</button>
+  </div>
+
+  <!-- PHASES -->
+  <div id="view-phases" class="view active">
+    <div class="sec-label">Phase-wise career timeline</div>
+    <div class="phase-card current">
+      <div class="phase-header"><span class="phase-badge ph1">Phase 1</span><span class="phase-title">IT career + MTech</span><span class="badge-current">▶ Current</span></div>
+      <div class="phase-meta">2026 – 2029 · Ages 23–26 · Save ₹5–8L by 2029</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">Settle in Bangalore · enroll MTech BITS/IIT · UPSC background reading · save aggressively · start SIP</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">BTech ✅ → MTech 🎯</div></div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-header"><span class="phase-badge ph2">Phase 2</span><span class="phase-title">IT career + MBA</span></div>
+      <div class="phase-meta">2028 – 2030 · Ages 25–27 · Save ₹8–12L by 2030</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">Enroll Online MBA (NMIMS/Symbiosis) · IIM Kozhikode Executive PGP · MTech completion</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">MTech 🎯 → MBA 🎯</div></div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-header"><span class="phase-badge ph3">Phase 3</span><span class="phase-title">UPSC prep alongside IT</span></div>
+      <div class="phase-meta">2029 – 2031 · Ages 26–28 · Save ₹12–18L by 2031</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">Attempts 1–3 · serious UPSC study · Mains preparation · NET-JRF as backup</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">IAS Attempts 1–3</div></div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-header"><span class="phase-badge ph4">Phase 4</span><span class="phase-title">IT exit + transition</span></div>
+      <div class="phase-meta">2032 · Age 29 · Corpus ₹18–22L ready</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">Exit IT (Feb 2032) · PhD enrollment · UPSC Attempt 4 · relocate to Kerala</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">IAS Attempt 4 · PhD Enroll</div></div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-header"><span class="phase-badge ph5">Phase 5</span><span class="phase-title">PhD + final UPSC</span></div>
+      <div class="phase-meta">2032 – 2034 · Ages 29–31 · JRF stipend ₹37–42K/month</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">PhD research · UPSC Attempts 5 & 6 · research papers · JRF fellowship income</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">IAS final attempts · PhD ongoing</div></div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-header"><span class="phase-badge ph6">Phase 6</span><span class="phase-title">PhD completion</span></div>
+      <div class="phase-meta">2034 – 2036 · Ages 31–33 · Academic salary begins</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">Thesis writing · NET qualification · Assistant Professor applications at NITs/Central Univ</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">PhD 🎯 · NET 🎯</div></div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-header"><span class="phase-badge ph7">Phase 7</span><span class="phase-title">Career establishment</span></div>
+      <div class="phase-meta">2036+ · Age 33+ · Stable income</div>
+      <div class="phase-grid">
+        <div><div class="phase-col-label">Primary focus</div><div class="phase-col-val">Academic career OR IAS service · BEd/MEd optional for school-level teaching</div></div>
+        <div><div class="phase-col-label">Credentials target</div><div class="phase-col-val">BEd/MEd 🎯 (optional)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YEAR BY YEAR -->
+  <div id="view-years" class="view">
+    <div class="sec-label">Year-by-year action plan</div>
+    <div class="card">
+      <div class="year-hdr"><div>Year</div><div>Age</div><div>Status</div><div style="padding-left:10px">Actions</div></div>
+      <div class="year-row"><div class="year-num">2026</div><div class="year-age">23→24</div><div><span class="year-status st-current">Current</span></div><div class="year-body"><div class="year-phase-tag">Phase 1 · IT + MTech</div><div class="year-actions">Settle into Bangalore · learn corporate culture · build network · research MTech (BITS WILP, IIT Online) · read NCERTs lightly · subscribe The Hindu · Save ₹80K–1.2L · start SIP ₹5K/month</div></div></div>
+      <div class="year-row"><div class="year-num">2027</div><div class="year-age">24→25</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 1 · IT + MTech</div><div class="year-actions">Perform well · seek first appraisal · enroll MTech BITS Pilani WILP (May–Jul intake) · Semester 1–2 · start Laxmikanth (Polity) · current affairs routine · Save ₹1.5–2L</div></div></div>
+      <div class="year-row"><div class="year-num">2028</div><div class="year-age">25→26</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 1→2 · IT + MTech + MBA</div><div class="year-actions">Mid-level role · 2 yrs experience unlocks Executive MBA · MTech Sem 3–4 · enroll Online MBA (NMIMS/Symbiosis) · Spectrum History · Geography NCERT · mock tests · Save ₹2–2.5L</div></div></div>
+      <div class="year-row"><div class="year-num">2029</div><div class="year-age">26→27</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 2 · Senior IT + MBA</div><div class="year-actions">Senior/mid-level IT role · salary ₹8–15 LPA · MTech complete ✅ · MBA Year 2 · research PhD programs · UPSC Attempt 1 (June 2029) — gauge attempt · Save ₹3–3.5L · Corpus = ₹6–8L</div></div></div>
+      <div class="year-row"><div class="year-num">2030</div><div class="year-age">27→28</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 2 · IT + UPSC</div><div class="year-actions">Strong performer · build savings harder · MBA complete ✅ · explore NET-JRF · IIM Kozhikode Executive if budget allows · UPSC Attempt 2 (June 2030) — target Prelims clearance · Save ₹4L · Corpus = ₹10–12L</div></div></div>
+      <div class="year-row"><div class="year-num">2031</div><div class="year-age">28→29</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 3 · IT exit planning</div><div class="year-actions">Plan IT exit (Feb 2032) · negotiate terms · build references · NET-JRF attempt · PhD shortlisting (IIT/NIT/CUSAT) · UPSC Attempt 3 (June 2031) — push for Mains · Save ₹4–5L · Target corpus ₹16–18L</div></div></div>
+      <div class="year-row"><div class="year-num">2032</div><div class="year-age">29→30</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 4 · EXIT IT ⚡</div><div class="year-actions">EXIT IT (Feb 2032) — 6 years complete · enroll PhD (IIT/NIT/CUSAT/Kerala Univ) · JRF stipend ₹37K/month starts · UPSC Attempt 4 — most focused attempt post-IT · live on JRF stipend + corpus</div></div></div>
+      <div class="year-row"><div class="year-num">2033</div><div class="year-age">30→31</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 5 · PhD + UPSC</div><div class="year-actions">PhD full-time · publish papers · conferences · PhD Year 2 · thesis proposal · UPSC Attempt 5 — if Prelims cleared: full Mains push · SRF upgrade possible (₹42K/month)</div></div></div>
+      <div class="year-row"><div class="year-num">2034</div><div class="year-age">31→32</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 5 · Final UPSC ⚠️</div><div class="year-actions">PhD Year 3 · major research milestones · thesis writing begins · submit 2–3 peer-reviewed papers · UPSC Attempt 6 — FINAL ATTEMPT (age 31 on Aug 1, 2034 ✅) · JRF/SRF stipend continues</div></div></div>
+      <div class="year-row"><div class="year-num">2035</div><div class="year-age">32→33</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 6 · PhD completion</div><div class="year-actions">PhD complete ✅ · thesis submission · viva voce · apply Asst. Professor (NITs/Central Univ/IIMs) · academic salary ₹57K–1L/month begins</div></div></div>
+      <div class="year-row"><div class="year-num">2036+</div><div class="year-age">33+</div><div><span class="year-status st-upcoming">Upcoming</span></div><div class="year-body"><div class="year-phase-tag">Phase 7 · Establishment</div><div class="year-actions">Academic career OR IAS service · BEd/MEd if school-level teaching desired · stable income stream established · long-term wealth building · Kerala home base</div></div></div>
+    </div>
+  </div>
+
+  <!-- CREDENTIALS -->
+  <div id="view-credentials" class="view">
+    <div class="sec-label">Credentials tracker</div>
+    <div class="card">
+      <div class="cred-hdr"><div>Credential</div><div>Start</div><div>End</div><div>Status</div></div>
+      <div class="cred-row"><div><div class="cred-name">BTech CSE</div><div class="cred-type">Engineering degree · College of Engineering Kerala</div></div><div class="cred-yr">2021</div><div class="cred-yr">2025</div><div><span class="cred-status cs-done">Complete ✅</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">MTech / MS (CSE)</div><div class="cred-type">Postgrad · BITS Pilani WILP / IIT Madras / IIT Bombay Online</div></div><div class="cred-yr">2027</div><div class="cred-yr">2029</div><div><span class="cred-status cs-target">Target 🎯</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">MBA</div><div class="cred-type">Management · NMIMS Online / Symbiosis / IIM Kozhikode Exec PGP</div></div><div class="cred-yr">2028</div><div class="cred-yr">2030</div><div><span class="cred-status cs-target">Target 🎯</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">NET-JRF (UGC)</div><div class="cred-type">National Eligibility Test · NTA · ₹37–42K/month stipend if JRF</div></div><div class="cred-yr">2030</div><div class="cred-yr">2031</div><div><span class="cred-status cs-target">Target 🎯</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">IAS (UPSC CSE)</div><div class="cred-type">Civil Services · All India · up to 6 attempts · prep cost ₹50K–2L</div></div><div class="cred-yr">2029</div><div class="cred-yr">2034</div><div><span class="cred-status cs-target">Target 🎯</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">PhD</div><div class="cred-type">Doctoral · IITs / NITs / CUSAT / Kerala Univ · JRF stipend funded</div></div><div class="cred-yr">2032</div><div class="cred-yr">2036</div><div><span class="cred-status cs-target">Target 🎯</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">BEd</div><div class="cred-type">Bachelor of Education · IGNOU / Kerala colleges · only if K–12 teaching</div></div><div class="cred-yr">2036</div><div class="cred-yr">2038</div><div><span class="cred-status cs-optional">Optional ⚪</span></div></div>
+      <div class="cred-row"><div><div class="cred-name">MEd</div><div class="cred-type">Master of Education · IGNOU / Central Univ · curriculum leadership</div></div><div class="cred-yr">2038</div><div class="cred-yr">2040</div><div><span class="cred-status cs-optional">Optional ⚪</span></div></div>
+    </div>
+    <div class="progress-section">
+      <div class="sec-label">Overall progress</div>
+      <div class="progress-row"><span class="progress-label">BTech CSE</span><div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div><span class="progress-year" style="color:var(--green-text);font-weight:600">Done</span></div>
+      <div class="progress-row"><span class="progress-label">MTech</span><div class="progress-bar"><div class="progress-fill" style="width:5%"></div></div><span class="progress-year">2027</span></div>
+      <div class="progress-row"><span class="progress-label">MBA</span><div class="progress-bar"><div class="progress-fill" style="width:2%"></div></div><span class="progress-year">2028</span></div>
+      <div class="progress-row"><span class="progress-label">UPSC (Attempt 1)</span><div class="progress-bar"><div class="progress-fill" style="width:1%"></div></div><span class="progress-year">2029</span></div>
+      <div class="progress-row"><span class="progress-label">PhD</span><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-year">2032</span></div>
+    </div>
+  </div>
+
+  <!-- UPSC -->
+  <div id="view-upsc" class="view">
+    <div class="metric-row" style="margin-bottom:1.25rem">
+      <div class="metric"><div class="metric-label">Category</div><div class="metric-value" style="font-size:16px">General</div><div class="metric-sub">Christian, Kerala</div></div>
+      <div class="metric"><div class="metric-label">Age limit</div><div class="metric-value">32 yrs</div><div class="metric-sub">Aug 1 cutoff</div></div>
+      <div class="metric"><div class="metric-label">Max attempts</div><div class="metric-value">6</div><div class="metric-sub">2029 – 2034</div></div>
+      <div class="metric"><div class="metric-label">Last attempt</div><div class="metric-value">2034</div><div class="metric-sub">Age 31 on Aug 1</div></div>
+    </div>
+    <div class="sec-label">Attempt tracker</div>
+    <div class="card">
+      <div class="upsc-hdr"><div>Attempt</div><div>Year</div><div>Age</div><div>Preparation focus</div><div>Stage</div></div>
+      <div class="upsc-row"><div class="upsc-attempt">Attempt 1</div><div>2029</div><div>26</div><div class="upsc-focus">Full syllabus revision · GS Paper I–IV · CSAT · mock tests · gauge attempt, understand pattern, analyze weak areas</div><div><span class="upsc-stage">Prelims</span></div></div>
+      <div class="upsc-row"><div class="upsc-attempt">Attempt 2</div><div>2030</div><div>27</div><div class="upsc-focus">Weak area focus · answer writing practice · essay practice · target Prelims clearance · Mains preparation</div><div><span class="upsc-stage">Prelims + Mains</span></div></div>
+      <div class="upsc-row"><div class="upsc-attempt">Attempt 3</div><div>2031</div><div>28</div><div class="upsc-focus">Mains answer quality · current affairs depth · optional subject mastery · last working year · interview prep</div><div><span class="upsc-stage">Prelims + Mains</span></div></div>
+      <div class="upsc-row"><div class="upsc-attempt">Attempt 4</div><div>2032</div><div>29</div><div class="upsc-focus">Post-IT full-time prep · interview coaching · personality test — most focused attempt with full time available</div><div><span class="upsc-stage">All stages</span></div></div>
+      <div class="upsc-row"><div class="upsc-attempt">Attempt 5</div><div>2033</div><div>30</div><div class="upsc-focus">Refine strategy · deep current affairs · leadership case studies · PhD running parallel, strong discipline needed</div><div><span class="upsc-stage">All stages</span></div></div>
+      <div class="upsc-row"><div class="upsc-attempt" style="color:var(--amber-text)">Attempt 6 ⚠️</div><div>2034</div><div>31</div><div class="upsc-focus">Final push · all experience combined · interview prep intensive · age 31 on Aug 1, 2034 ✅ — within limit</div><div><span class="upsc-stage upsc-final">Final</span></div></div>
+    </div>
+    <div class="upsc-note"><strong style="color:var(--text)">Optional subject recommendation:</strong> <em>Computer Science & IT</em> (leverages BTech + MTech) OR <em>Public Administration</em> (versatile, widely coached). Decide by Attempt 2.</div>
+  </div>
+
+  <!-- FINANCES -->
+  <div id="view-finance" class="view">
+    <div class="sec-label">Savings & expense roadmap</div>
+    <div class="card">
+      <div class="fin-hdr"><div>Year</div><div>Income source</div><div>Annual income</div><div>Target savings</div><div>Cumulative corpus</div></div>
+      <div class="fin-row"><div><div class="fin-year">2026</div><span style="font-size:10px;font-weight:600;background:var(--info-bg);color:var(--info-text);padding:1px 5px;border-radius:3px">Now</span></div><div class="fin-income">IT Salary (Trainee)</div><div class="fin-num">₹3–4.5 LPA</div><div class="fin-save">₹1–1.5L</div><div><div class="fin-corpus-num">₹1–1.5L</div><div class="corpus-bar"><div class="corpus-fill" style="width:6%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2027</div><div class="fin-income">IT Salary</div><div class="fin-num">₹4–6 LPA</div><div class="fin-save">₹1.5–2L</div><div><div class="fin-corpus-num">₹2.5–3.5L</div><div class="corpus-bar"><div class="corpus-fill" style="width:14%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2028</div><div class="fin-income">IT Salary</div><div class="fin-num">₹5–8 LPA</div><div class="fin-save">₹2–2.5L</div><div><div class="fin-corpus-num">₹4.5–6L</div><div class="corpus-bar"><div class="corpus-fill" style="width:24%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2029</div><div class="fin-income">IT Salary (Senior)</div><div class="fin-num">₹8–12 LPA</div><div class="fin-save">₹3–4L</div><div><div class="fin-corpus-num">₹7.5–10L</div><div class="corpus-bar"><div class="corpus-fill" style="width:40%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2030</div><div class="fin-income">IT Salary (Senior)</div><div class="fin-num">₹10–15 LPA</div><div class="fin-save">₹4–5L</div><div><div class="fin-corpus-num">₹11.5–15L</div><div class="corpus-bar"><div class="corpus-fill" style="width:58%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2031</div><div class="fin-income">IT Salary (Senior)</div><div class="fin-num">₹12–18 LPA</div><div class="fin-save">₹4–6L</div><div><div class="fin-corpus-num">₹15.5–21L</div><div class="corpus-bar"><div class="corpus-fill" style="width:80%"></div></div></div></div>
+      <div class="fin-row exit-row"><div><div class="fin-year" style="color:var(--amber-text)">2032 ⚡</div><div style="font-size:10px;color:var(--amber-text);font-weight:600">IT EXIT</div></div><div class="fin-income">JRF Stipend (₹37K/mo)</div><div class="fin-num">₹4.4L/yr</div><div class="fin-save">₹1–1.5L</div><div><div class="fin-corpus-num">₹16.5–22.5L</div><div class="corpus-bar"><div class="corpus-fill" style="width:88%;background:var(--amber-border)"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2033</div><div class="fin-income">JRF/SRF Stipend</div><div class="fin-num">₹5L/yr</div><div class="fin-save">₹1.5–2L</div><div><div class="fin-corpus-num">₹18–24.5L</div><div class="corpus-bar"><div class="corpus-fill" style="width:94%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2034</div><div class="fin-income">SRF Stipend</div><div class="fin-num">₹5L/yr</div><div class="fin-save">₹1.5–2L</div><div><div class="fin-corpus-num">₹19.5–26.5L</div><div class="corpus-bar"><div class="corpus-fill" style="width:100%"></div></div></div></div>
+      <div class="fin-row"><div class="fin-year">2035+</div><div class="fin-income">Academic salary / IAS</div><div class="fin-num">₹6–20L+/yr</div><div class="fin-save">₹3–10L+</div><div><div class="fin-corpus-num">Growing</div><div class="corpus-bar"><div class="corpus-fill" style="width:100%;background:var(--green-border)"></div></div></div></div>
+    </div>
+    <div class="fin-note"><strong>Key goal:</strong> Build ₹18–22L corpus before IT exit (Feb 2032). Post-IT income from JRF stipend + corpus covers PhD + UPSC prep years in Kerala.</div>
+  </div>
+
+  <!-- WATCHPOINTS -->
+  <div id="view-watchpoints" class="view">
+    <div class="sec-label">Critical watchpoints</div>
+    <div class="alert-card"><div class="alert-title"><i class="ti ti-clock" aria-hidden="true"></i> UPSC age deadline</div><div class="alert-body">General category age limit is 32 years (Aug 1 cutoff). Last eligible attempt is 2034. Begin by 2029 to use all 6 attempts.</div></div>
+    <div class="alert-card"><div class="alert-title"><i class="ti ti-certificate" aria-hidden="true"></i> MTech before MBA</div><div class="alert-body">Complete MTech first — it is the gateway to PhD enrollment. MBA is a professional add-on, not an academic prerequisite.</div></div>
+    <div class="alert-card"><div class="alert-title"><i class="ti ti-coin" aria-hidden="true"></i> Financial corpus</div><div class="alert-body">Save ₹18–22L before exiting IT. Post-IT years (UPSC + PhD) need 2–3 years of runway. This is non-negotiable.</div></div>
+    <div class="alert-card"><div class="alert-title"><i class="ti ti-home" aria-hidden="true"></i> Kerala advantage</div><div class="alert-body">Relocating to Kerala post-IT drastically reduces living costs. JRF stipend of ₹37–42K/month goes much further there than in Bangalore.</div></div>
+    <div class="alert-card"><div class="alert-title"><i class="ti ti-school" aria-hidden="true"></i> BEd not always needed</div><div class="alert-body">For university/college teaching: PhD + NET-JRF is sufficient. BEd is only needed for school (K–12) level teaching.</div></div>
+    <div style="margin-top:1.75rem">
+      <div class="sec-label">MBA options — quick reference</div>
+      <div class="card">
+        <div class="mba-hdr"><div>Program</div><div>Duration</div><div>Total fee</div><div>Rating</div></div>
+        <div class="mba-row"><div><strong style="font-size:13px">NMIMS Online MBA</strong> <span style="font-size:10px;font-weight:600;background:var(--blue-bg);color:var(--blue-text);padding:1px 6px;border-radius:3px;margin-left:4px">Best value</span><div style="font-size:11px;color:var(--text-secondary);margin-top:1px">Online (async) · eligible from 2027</div></div><div style="font-size:13px;color:var(--text-secondary)">2 yrs</div><div style="font-size:13px;color:var(--text-secondary)">₹1.8–2.5L</div><div style="font-size:13px">⭐⭐⭐⭐⭐</div></div>
+        <div class="mba-row"><div><strong style="font-size:13px">Symbiosis SCDL</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:1px">Distance/Online · eligible from 2027</div></div><div style="font-size:13px;color:var(--text-secondary)">2–3 yrs</div><div style="font-size:13px;color:var(--text-secondary)">₹1–1.5L</div><div style="font-size:13px">⭐⭐⭐⭐</div></div>
+        <div class="mba-row"><div><strong style="font-size:13px">BITS Pilani MBA WILP</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:1px">Weekend classes · eligible from 2027</div></div><div style="font-size:13px;color:var(--text-secondary)">2.5 yrs</div><div style="font-size:13px;color:var(--text-secondary)">₹3.5–4.5L</div><div style="font-size:13px">⭐⭐⭐⭐</div></div>
+        <div class="mba-row"><div><strong style="font-size:13px">IIM Kozhikode Executive PGP</strong> <span style="font-size:10px;font-weight:600;background:var(--teal-bg);color:var(--teal-text);padding:1px 6px;border-radius:3px;margin-left:4px">Kerala connect</span><div style="font-size:11px;color:var(--text-secondary);margin-top:1px">Weekend/Online · min 2 yrs exp · from 2028</div></div><div style="font-size:13px;color:var(--text-secondary)">1 yr</div><div style="font-size:13px;color:var(--text-secondary)">₹12–15L</div><div style="font-size:13px">⭐⭐⭐⭐⭐</div></div>
+        <div class="mba-row"><div><strong style="font-size:13px">IIM Bangalore EPGP</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:1px">Residential · min 5 yrs exp · from 2031</div></div><div style="font-size:13px;color:var(--text-secondary)">1 yr</div><div style="font-size:13px;color:var(--text-secondary)">₹28–32L</div><div style="font-size:13px">⭐⭐⭐</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Life Roadmap · personal use only · last updated 2026</div>
+</div>
+
+<script>
+  async function verifyAndShow() {
+    const token = sessionStorage.getItem('roadmap_token');
+    if (!token) {
+      window.location.href = '/';
+      return;
+    }
+    try {
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        sessionStorage.removeItem('roadmap_token');
+        window.location.href = '/';
+        return;
+      }
+      document.getElementById('auth-gate').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+    } catch {
+      window.location.href = '/';
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('roadmap_token');
+    window.location.href = '/';
+  }
+
+  function switchTab(id) {
+    const ids = ['phases','years','credentials','upsc','finance','watchpoints'];
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', ids[i] === id));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + id));
+  }
+
+  verifyAndShow();
+</script>
+</body>
+</html>
