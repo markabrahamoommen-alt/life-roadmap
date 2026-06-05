@@ -1,10 +1,11 @@
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -16,6 +17,11 @@ export default async function handler(req, res) {
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password required' });
   }
+
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
   try {
     const { data: userId, error } = await supabase.rpc('verify_user', {
@@ -36,7 +42,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ token });
 
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
 }
